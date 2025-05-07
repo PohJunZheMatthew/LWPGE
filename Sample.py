@@ -1,5 +1,6 @@
 #Sample code
 from LWPGE import *
+from urandom import *
 while True:
     Graphics().fillRect(Rect(randint(0,5),randint(0,5),1,1))
     Graphics.Clock(60)
