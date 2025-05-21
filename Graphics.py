@@ -915,4 +915,4 @@ class Graphics():
                     else:
                         brightness = 0
                     hub.display.pixel(x, y, brightness > 0)
-            wait(delay)s
+            wait(delay)
