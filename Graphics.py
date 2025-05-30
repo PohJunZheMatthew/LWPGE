@@ -1,6 +1,7 @@
 """
 Author: Matthew Poh
 A simple, lightweight library that can do basic graphics stuff
+Note that it takes very long for it to upload code into pybricks hub
 """
 from pybricks.hubs import *
 from pybricks.pupdevices import *
@@ -43,16 +44,16 @@ class Shape():
         │[100,000,100],│
         │[100,000,100],│
         │[100,100,100] │
-        └              ┘.                 
+        └              ┘              
         //The result should be 3x4 square with two square missing at the center
         """
         try:
             for xArrays in shapeArray:
                 for brightness in xArrays:
                     if brightness > 100 or brightness < 0:
-                        raise brightnessOutOfBounds
-        except(error):
-            raise failedToInitializationShape
+                        print("Error")
+        except:
+            raise Exception("ERROR")
         else:
             self.shapeArray = shapeArray;
             self.x = x
@@ -109,20 +110,35 @@ class Graphics():
             for o in range(5):
                 PrimeHub().display.pixel(i,o,brightness)
     def drawLine(self,line:Line):
-        width = line.point2.x-line.point1.x
-        height = line.point2.y-line.point1.y
-        RadAngle = atan2(float(height),float(width))
-        for i in range(100):
-            loopingPercent = i/width
-            y = line.point1.y+height*loopingPercent
-            x = line.point1.x+width*loopingPercent
-            PrimeHub().display.pixel(int(y),int(x),line.brightness)
+        y2 = line.point2.y;
+        y1 = line.point1.y
+        x1 = line.point1.x;
+        x2 = line.point2.x;
+        if (line.point2.y - line.point1.y) == 0 and(line.point2.x - line.point1.x) == 0:
+            return;
+        m = (line.point2.y - line.point1.y) / (line.point2.x - line.point1.x)
+        m_new = 2 * (y2 - y1)
+        slope_error_new = m_new - (x2 - x1)
+
+        y = y1
+        for x in range(x1, x2+1):
+
+            PrimeHub().display.pixel(y,x,line.brightness)
+
+            # Add slope to increment angle formed
+            slope_error_new = slope_error_new + m_new
+
+            # Slope error reached limit, time to
+            # increment y and update slope error.
+            if (slope_error_new >= 0):
+                y = y+1
+                slope_error_new = slope_error_new - 2 * (x2 - x1)
     def drawShape(self,shape:Shape):
         x = shape.x
         y = shape.y
         for yoffset,arrays in enumerate(shape.shapeArray):
             for i,brightness in enumerate(arrays):
-                PrimeHub().display.pixel(y+yoffset,x+i,brightness)
+                PrimeHub().display.pixel(x+i,y+yoffset,brightness)
     def Clock(self,frameRate:int):
         wait(1000/frameRate)
     def Refresh(self):
@@ -898,21 +914,13 @@ class Graphics():
         }
         full_buffer = []
 
-        for char in text:
+        for char in string:
             char_matrix = font5X5[char] if char in font5X5 else font5X5['-']
             for col in range(5):
                 full_buffer.append([row[col] for row in char_matrix])
             full_buffer.append([0] * 5) 
 
         text_width = len(full_buffer)
-
-        for offset in range(-5, text_width):
-            for y in range(5):
-                for x in range(5):
-                    col_idx = offset + x
-                    if 0 <= col_idx < text_width:
-                        brightness = full_buffer[col_idx][y]
-                    else:
-                        brightness = 0
-                    hub.display.pixel(x, y, brightness > 0)
+        for i in range(text_width-5):
+            self.drawShape(Shape(0,0-i,full_buffer))
             wait(delay)
