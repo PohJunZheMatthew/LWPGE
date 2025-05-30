@@ -3,8 +3,9 @@
 L.W.P.G.E means Lightweight Pybricks Graphics library 
 It is a lightweight graphic library that works on Pybricks.
 It is currently going through its alpha stages and isn't completed yet.
-It can be used to make games on the prime's hub display.
-
+It can be used to make games on the Prime's hub display.
+## Contributors:
+Currently, it is only I contributing, and I do not have a Spike Prime Hub at home, so I have to test some of the code in School.
 ## Tutorial and usage:
 ### 1. Create a gameloop:
 1. Start by importing the necessary library and modules first
